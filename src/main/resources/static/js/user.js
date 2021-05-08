@@ -34,6 +34,29 @@ let index = {
             alert(json.stringify(error));
         }); 
 
+    },
+
+    login: function(){
+        //alert('user의 save함수 호출됨');
+        let data = {
+            username: $("#username").val(),
+            password: $("#password").val(),
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/blog/api/user/login",
+            data: JSON.stringify(data), 
+            contentType: "application/json; charset=utf-8", 
+            dataType: "json" 
+        }).done(function(resp){
+            console.log(resp)
+            alert('로그인이 완료되었습니다.');
+            location.href = "/blog";
+        }).fail(function(error){
+            alert(json.stringify(error));
+        }); 
+
     }
 
 }
