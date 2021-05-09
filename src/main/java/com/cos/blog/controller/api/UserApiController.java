@@ -19,7 +19,7 @@ public class UserApiController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/auth/join")
+    @PostMapping("/auth/joinProc")
     public ResponseDto<Integer> save(@RequestBody User user) {
         System.out.println("UserApiController : save");
         user.setRole(RoleType.USER);
@@ -27,22 +27,22 @@ public class UserApiController {
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
     }
 
-    // @Autowired
-    // private HttpSession session;
-    // HttpSession은 Spring에 bean으로 등록되었기에
-    // autowired를 통해 객체를 받아와 아래 메소드의 인자를 선언하지않고 사용할 수 있다.
-    // 기본적인 로그인 방식(Spring 방식과 다름)
-
-    // @PostMapping("/api/user/login")
-    // public ResponseDto<Integer> login(@RequestBody User user, HttpSession
-    // session) {
-    // System.out.println("UserApiController : login 호출됨");
-    // User principal = userService.로그인(user); // principal(접근주체)
-
-    // if (principal != null) {
-    // session.setAttribute("principal", principal);
-    // }
-    // return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
-    // }
-
 }
+
+// @Autowired
+// private HttpSession session;
+// HttpSession은 Spring에 bean으로 등록되었기에
+// autowired를 통해 객체를 받아와 아래 메소드의 인자를 선언하지않고 사용할 수 있다.
+// 기본적인 로그인 방식(Spring 방식과 다름)
+
+// @PostMapping("/api/user/login")
+// public ResponseDto<Integer> login(@RequestBody User user, HttpSession
+// session) {
+// System.out.println("UserApiController : login 호출됨");
+// User principal = userService.로그인(user); // principal(접근주체)
+
+// if (principal != null) {
+// session.setAttribute("principal", principal);
+// }
+// return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+// }

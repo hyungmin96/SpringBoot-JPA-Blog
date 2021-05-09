@@ -4,6 +4,7 @@ import com.cos.blog.model.User;
 import com.cos.blog.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,8 +15,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder encode;
+
     @Transactional
     public void 회원가입(User user) {
+        String rawPassword = user.getPassword(); // 1234
+        String encPassword = encode.encode(rawPassword);
+        user.setPassword(encPassword);
         userRepository.save(user);
     }
 
