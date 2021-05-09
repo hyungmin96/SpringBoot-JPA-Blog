@@ -3,30 +3,30 @@
   <%@ include file="../layout/header.jsp" %>
 
     <div class="container">
-      <form>
+      <form action="#" method = "post">
 
         <div class="form-group">
           <label for="email">Username</label>
-          <input type="text" class="form-control" placeholder="Enter Username" id="username">
+          <input type="text" name="username" class="form-control" placeholder="Enter Username" id="username">
         </div>
 
         <div class="form-group">
           <label for="pwd">Password</label>
-          <input type="password" class="form-control" placeholder="Enter password" id="password">
+          <input type="password" name="password" class="form-control" placeholder="Enter password" id="password">
         </div>
 
         <div class="form-group form-check">
           <label class="form-check-label">
-            <input class="form-check-input" type="checkbox"> Remember me
+            <input class="form-check-input" name="remember" type="checkbox"> Remember me
           </label>
         </div>
 
-      </form>
-
       <button id = "btn-login" class="btn btn-primary">로그인</button>
+
+      </form>
 
     </div>
 
-    <script src="/blog/js/user.js"></script>
+    <script src="/js/user.js"></script>
 
     <%@ include file="../layout/footer.jsp" %>

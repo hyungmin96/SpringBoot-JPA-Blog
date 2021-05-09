@@ -9,11 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 // 자동으로 bean 등록이 된다.
 // @Repository 생략됨
 public interface UserRepository extends JpaRepository<User, Integer> {
-    // JPA Namming 쿼리
-    // Select * From user Where username = ? And password = ?;
-    User findByUsernameAndPassword(String username, String password);
 
-    // @Query(value = "SELECT * FROM user WHERE username = ?1 AND password = ?2",
-    // nativeQuery = true)
-    // User login(String username, String pasword);
 }
+// JPA Namming 쿼리
+// Select * From user Where username = ? And password = ?;
+// User findByUsernameAndPassword(String username, String password);
+
+// @Query(value = "SELECT * FROM user WHERE username = ?1 AND password = ?2",
+// nativeQuery = true)
+// User login(String username, String pasword);
