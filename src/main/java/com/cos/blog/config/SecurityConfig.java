@@ -39,9 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // csrf token 비활성화(테스트시 걸어두는게 좋음)
-        http.csrf().disable().authorizeRequests().antMatchers("/", "/auth/**", "/js/**", "/css/**", "/image/**")
-                .permitAll().anyRequest().authenticated().and().formLogin().loginPage("/auth/loginForm")
-                .loginProcessingUrl("/auth/loginProc").defaultSuccessUrl("/");
+        http.csrf().disable().authorizeRequests()
+                .antMatchers("/", "/auth/**", "/js/**", "/css/**", "/image/**", "/dummy/**").permitAll().anyRequest()
+                .authenticated().and().formLogin().loginPage("/auth/loginForm").loginProcessingUrl("/auth/loginProc")
+                .defaultSuccessUrl("/");
         // spring security가 요청을 intercept하여 처리
     }
 
