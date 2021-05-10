@@ -8,9 +8,12 @@ import com.cos.blog.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import lombok.Getter;
+
 // spring security가 로그인 요청을 intercept하여 로그인 진행
 // 완료되면 Userdetails 타입의 오브젝트를
 // spring security 고유 세션저장소에 저장
+@Getter
 public class PrincipalDetail implements UserDetails {
 
     private User user; // composition
