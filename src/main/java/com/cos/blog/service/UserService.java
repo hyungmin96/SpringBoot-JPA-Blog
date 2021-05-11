@@ -1,6 +1,8 @@
 package com.cos.blog.service;
 
+
 import com.cos.blog.model.User;
+import com.cos.blog.model.kakaoProfile;
 import com.cos.blog.model.kakaoToken;
 import com.cos.blog.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -8,6 +10,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,12 +37,27 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder encode;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Value("${cos.key}")
+    private String cosKey;
+
     @Transactional
     public void 회원가입(User user) {
         String rawPassword = user.getPassword(); // 1234
         String encPassword = encode.encode(rawPassword);
         user.setPassword(encPassword);
         userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public User 회원찾기(String username){
+        User user = userRepository.findByUsername(username).orElseGet(() -> {
+            return new User();
+        });
+
+        return user;
     }
 
     @Transactional
@@ -47,16 +69,19 @@ public class UserService {
             return new IllegalArgumentException("회원 찾기 실패");
         });
 
-        String raawPassword = user.getPassword();
-        String encPassword = encode.encode(raawPassword);
-        persistance.setPassword(encPassword);
+        if(persistance.getOauth() == null || persistance.getOauth().equals("")){
+            String raawPassword = user.getPassword();
+            String encPassword = encode.encode(raawPassword);
+            persistance.setPassword(encPassword);
+        }
+        
         persistance.setEmail(user.getEmail());
 
         // 회원수정 함수 종료시 = 서비스 종료 = transaction 종료 = commit 이 auto execute
         // 영속화된 persistance 객체의 변화가 감지되면(더티체킹) update문을 자동으로 execute
     }
 
-    public String kakaoTokenLogin(String code){
+    public kakaoToken kakaoTokenLogin(String code){
 
             // POST 방식으로 key=value 방식으로 데이터를 카카오로 요청
             RestTemplate rt = new RestTemplate();
@@ -83,8 +108,6 @@ public class UserService {
                 String.class
             );
 
-        // GSON, Json Simple, ObjectMapper
-
         ObjectMapper objectMapper = new ObjectMapper();
         kakaoToken token = null;
 
@@ -96,17 +119,17 @@ public class UserService {
             e.printStackTrace();
         }
 
-        return "" + response;
+        return token;
 
     }
 
-    public String getKakaoInfo(String code){
+    public String getKakaoInfo(kakaoToken token){
 
         RestTemplate rt = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-        headers.add("Authorization", "Bearer ");
+        headers.add("Authorization", "Bearer " + token.getAccess_token());
 
         HttpEntity<MultiValueMap<String, String>> infoRequest = new HttpEntity<>(headers);
 
@@ -117,7 +140,42 @@ public class UserService {
             String.class
         );
 
-        return "" + response;
+        kakaoProfile profile = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            profile = objectMapper.readValue(response.getBody(), kakaoProfile.class);
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("카카오 아이디 : " + profile.getId());
+        System.out.println("카카오 이메일 : " + profile.getKakao_account().getEmail());
+        
+        System.out.println("블로그서버 유저네임 : " + profile.getKakao_account().getEmail() + "_" + profile.getId());
+        System.out.println("블로그서버 이메일 : " + profile.getKakao_account().getEmail());
+        System.out.println("블로그서버 패스워드 : " + cosKey);
+
+
+        User kakaoUser = User.builder()
+        .username(profile.getKakao_account().getEmail() + "_" + profile.getId())
+        .password(cosKey)
+        .email(profile.getKakao_account().getEmail())
+        .oauth("kakao")
+        .build();
+
+        if(this.회원찾기(kakaoUser.getUsername()).getUsername() == null)
+            this.회원가입(kakaoUser);
+        else
+            System.out.println("이미 가입된 회원 입니다.");
+
+            Authentication authentication = authenticationManager
+            .authenticate(new UsernamePasswordAuthenticationToken(kakaoUser.getUsername(), cosKey));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return "redirect:/";
     }
 
     // @Transactional(readOnly = true) // Select할 때 트랜잭션 시작, 서비스 종료시에 트랜잭션 종료(정합성)

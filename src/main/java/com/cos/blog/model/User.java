@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id; // 시퀸스, auto_increment
 
-    @Column(nullable = false, length = 30, unique = true)
+    @Column(nullable = false, length = 100, unique = true)
     private String username;
 
     @Column(nullable = false, length = 100)
@@ -45,6 +46,10 @@ public class User {
     // @ColumnDefault("user")
     @Enumerated(EnumType.STRING)
     private RoleType role; // Enum을 쓰는게 좋다.
+
+    @Column
+    @ColumnDefault(value = "general")
+    private String oauth;
 
     @CreationTimestamp
     private Timestamp createDate;

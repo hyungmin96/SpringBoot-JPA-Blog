@@ -2,7 +2,6 @@ package com.cos.blog.controller.api;
 
 import javax.servlet.http.HttpSession;
 
-import com.cos.blog.config.auth.PrincipalDetailService;
 import com.cos.blog.dto.ResponseDto;
 import com.cos.blog.model.RoleType;
 import com.cos.blog.model.User;
@@ -14,11 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @RestController
 public class UserApiController {
@@ -27,7 +25,7 @@ public class UserApiController {
     private UserService userService;
 
     @Autowired
-    private PrincipalDetailService principalDetailService;
+    private AuthenticationManager authenticationManager;
 
     @PostMapping("/auth/joinProc")
     public ResponseDto<Integer> save(@RequestBody User user) {
@@ -41,11 +39,9 @@ public class UserApiController {
     public ResponseDto<Integer> update(@RequestBody User user, HttpSession session) {
         userService.회원수정(user);
         // session registry
-        UserDetails userDetail = principalDetailService.loadUserByUsername(user.getUsername());
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetail, null, userDetail.getAuthorities());
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authentication);
-        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        Authentication authentication = authenticationManager
+        .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
     }
