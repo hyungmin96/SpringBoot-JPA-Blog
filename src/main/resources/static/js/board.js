@@ -39,7 +39,7 @@ let index = {
         let id = $("#id").text();
 
         $.ajax({
-            type: "DELETE",
+            type: "POST",
             url: "/api/board/"+id,
             dataType: "json"
         }).done(function(resp){

@@ -12,7 +12,7 @@
         </div>
       </c:forEach>
 
-        <ul class="pagination justify-content-center">
+      <ul class="pagination justify-content-center">
         <c:choose>
           <c:when test="${boards.first}">
             <li class="page-item disabled"><a class="page-link" href="?page=${boards.number - 1}">Previous</a></li>

@@ -1,0 +1,12 @@
+#commentContainer {
+    padding-bottom: 70px;
+}
+
+#footer {    
+    background-color: #e6e6e6;
+    bottom: 0;
+    font-size: 15pt;
+    height: 130px; 
+    position: fixed;   
+    width: 100%; 
+}

@@ -17,6 +17,8 @@ import javax.persistence.OrderBy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.AllArgsConstructor;
@@ -54,7 +56,8 @@ public class Board {
     
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
     @JsonIgnoreProperties(value = "board")
-    @OrderBy("id desc")
+    @OrderBy(value = "id ASC")
+    @Cascade(value = CascadeType.REMOVE)
     private List<Reply> replys;
 
     @CreationTimestamp

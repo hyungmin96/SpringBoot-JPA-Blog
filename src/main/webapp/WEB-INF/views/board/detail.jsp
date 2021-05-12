@@ -2,7 +2,7 @@
 
   <%@ include file="../layout/header.jsp" %>
 
-    <div class="container">
+    <div id="commentContainer" class="container">
 
       <button class="btn btn-secondary" onclick="history.back()">돌아가기</button>
       <c:if test="${board.user.id == principal.user.id}">
@@ -37,15 +37,15 @@
 
       <div class="card">
         <form>
-          <input type = "hidden" id = "userId" value = "${principal.user.id}"/>
-          <intput type="hidden" id="boardId" value="${board.id}" />
+          <input type = "hidden" id="userId" value = "${principal.user.id}"/>
+          <input type="hidden" id="boardId" value="${board.id}" />
           <div class="card-header">덧글 리스트</div>
-          <ul id="reply--box" class="list-group">
+          <ul id="reply-box" class="list-group">
             <c:forEach var="reply" items="${board.replys}">
-              <li id="reply--1" class="list-group-item">
+              <li id="reply-${reply.id}" class="list-group-item">
                 <div class="d-flex">
                   <h5> ${reply.user.username} &nbsp;</h5>
-                  <button class="deletebtn">삭제</button>
+                  <button onclick="comment.commentDelete(${board.id}, ${reply.id})">삭제</button>
                 </div>
                 <p style="margin-bottom: 0;">${reply.content}</p>
               </li>
