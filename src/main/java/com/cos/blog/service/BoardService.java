@@ -1,7 +1,5 @@
 package com.cos.blog.service;
 
-import java.util.List;
-
 import com.cos.blog.model.Board;
 import com.cos.blog.model.User;
 import com.cos.blog.repository.BoardRepository;

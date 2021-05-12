@@ -14,6 +14,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -47,10 +49,12 @@ public class Board {
 
     // mappedBy 연관관계의 주인이 아니다 (난 Fk가 아님) Db에 칼럼생성 X
     // mappedBy 는 불러올 객체의 변수명을 적어줘야함
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
     // @JoinColumn(name = "replyId")
     // reply는 1개의 게시글에 여러개가 등록될 수 있으니 Column을 추가하면 안됨
-    private List<Reply> reply;
+    
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties(value = "board")
+    private List<Reply> replys;
 
     @CreationTimestamp
     private Timestamp createDate;

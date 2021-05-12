@@ -56,9 +56,7 @@ let index = {
             title: $("#title").val(),
             content: $("#content").val(),
         };
-
         //console.log(data)
-
         // ajax호출시 default가 비동기 호출
         //ajax 통신을 이요해서 3개의 데이터를 json으로 변경하여 insert 요청
         //ajax 통신성공하고 json 리턴하면 서버가 자동으로 java object로 변환

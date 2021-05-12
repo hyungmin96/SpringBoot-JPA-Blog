@@ -73,9 +73,8 @@ public class UserService {
             String raawPassword = user.getPassword();
             String encPassword = encode.encode(raawPassword);
             persistance.setPassword(encPassword);
+            persistance.setEmail(user.getEmail());
         }
-        
-        persistance.setEmail(user.getEmail());
 
         // 회원수정 함수 종료시 = 서비스 종료 = transaction 종료 = commit 이 auto execute
         // 영속화된 persistance 객체의 변화가 감지되면(더티체킹) update문을 자동으로 execute
